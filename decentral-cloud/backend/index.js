@@ -29,7 +29,7 @@ const app = express();
 const port = 3001;
 
 // Smart Contract ABI and Address
-const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'; // Replace with your deployed contract address
+const contractAddress = require('../smart-contract/contract-address.json').contractAddress;
 const contractABI = [
   {
     "inputs": [
@@ -172,7 +172,7 @@ const contractABI = [
 
 // Connect to the local Hardhat network
 const provider = new ethers.JsonRpcProvider('http://localhost:8545');
-const signer = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', provider); // This is the private key of the first account from Hardhat
+const signer = new ethers.Wallet('0x9359ab512d15e9d2c5bd8caa929d9f3f2c5669475f8f06ce7414e8da07246809', provider);
 const storageContract = new ethers.Contract(contractAddress, contractABI, signer);
 
 app.use(cors());
@@ -203,10 +203,11 @@ app.post('/upload', upload.single('file'), async (req, res) => {
   }
   console.log('File received:', req.file.originalname);
 
+  let originalFilePath; // Declare outside try block
   try {
     const fileSize = req.file.size;
     const uploadDate = new Date().toISOString();
-    const originalFilePath = req.file.path;
+    originalFilePath = req.file.path;
     const fileName = req.file.originalname;
 
     // Read the file
@@ -316,7 +317,9 @@ app.get('/download/:fileName', async (req, res) => {
       // Fetch fragment from the storage node
       const retrieveResponse = await fetch(`${targetNodeUrl}/retrieve-fragment/${fragmentName}`);
       if (!retrieveResponse.ok) {
-        throw new Error(`Failed to retrieve fragment from node: ${await retrieveResponse.text()}`);
+        const errorBody = await retrieveResponse.text();
+        console.error(`Failed to retrieve fragment from node ${targetNodeUrl}: ${retrieveResponse.status} - ${errorBody}`);
+        throw new Error(`Failed to retrieve fragment from node: ${errorBody}`);
       }
       const encryptedFragmentBase64 = await retrieveResponse.text();
       const encryptedFragment = Buffer.from(encryptedFragmentBase64, 'base64');

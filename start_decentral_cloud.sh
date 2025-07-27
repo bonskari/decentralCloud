@@ -8,6 +8,16 @@ port_in_use() {
   lsof -i :$1 >/dev/null
 }
 
+# Start Hardhat Node
+if port_in_use 8545; then
+  echo "Hardhat node (port 8545) is already running."
+else
+  echo "Starting Ganache node..."
+  nohup ganache --chain.chainId 31337 --db /home/b1s/Documents/decentralCloud/ganache_db > ganache.log 2>&1 &
+  sleep 5 # Give Ganache time to start
+  (cd decentral-cloud/smart-contract && nohup npx hardhat run scripts/deploy.js --network localhost > deploy.log 2>&1) &
+fi
+
 # Start Backend Server
 if port_in_use 3001; then
   echo "Backend server (port 3001) is already running."
@@ -45,7 +55,7 @@ if port_in_use 3000; then
   echo "Frontend server (port 3000) is already running."
 else
   echo "Starting frontend server..."
-  nohup npm start --prefix decentral-cloud/frontend > decentral-cloud/frontend/frontend.log 2>&1 &
+  REACT_APP_BACKEND_URL=http://192.168.50.203:3001 nohup npm start --prefix decentral-cloud/frontend > decentral-cloud/frontend/frontend.log 2>&1 &
 fi
 
 echo "All Decentral Cloud components checked."

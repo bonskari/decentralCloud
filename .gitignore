@@ -1,9 +1,6 @@
 # Log files
-decentral-cloud/backend/backend.log
-decentral-cloud/storage-node-1/node1.log
-decentral-cloud/storage-node-2/node2.log
-decentral-cloud/storage-node-3/node3.log
-decentral-cloud/frontend/frontend.log
+*.log
+*.log.*
 
 # Node modules
 node_modules/
@@ -36,3 +33,7 @@ decentral-cloud/storage-node-3/fragments/
 # Hardhat artifacts
 decentral-cloud/smart-contract/artifacts/
 decentral-cloud/smart-contract/cache/
+decentral-cloud/smart-contract/contract-address.json
+
+# Ganache database
+ganache_db

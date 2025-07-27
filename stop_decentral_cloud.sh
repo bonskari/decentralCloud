@@ -35,7 +35,13 @@ kill_process_on_port 3002
 # Stop Storage Node 2 (port 3003)
 kill_process_on_port 3003
 
-# Stop Storage Node 3 (port 3004
+# Stop Storage Node 3 (port 3004)
 kill_process_on_port 3004
+
+# Stop Hardhat Node (port 8545)
+kill_process_on_port 8545
+
+# Stop Ganache Node (port 8545)
+kill_process_on_port 8545
 
 echo "Decentral Cloud components stop process complete."
