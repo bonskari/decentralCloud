@@ -1,6 +1,7 @@
 # Log files
 *.log
 *.log.*
+periodic_backup.log
 
 # Node modules
 node_modules/

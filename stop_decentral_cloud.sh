@@ -41,4 +41,21 @@ kill_process_on_port 3004
 # Stop Ganache Node (port 8545)
 kill_process_on_port 8545
 
+# Stop Periodic Ganache DB Backup
+PROCESS_NAME="run_periodic_backup.sh"
+PID=$(pgrep -f "$PROCESS_NAME")
+if [ -n "$PID" ]; then
+  echo "Stopping periodic backup process ($PROCESS_NAME)..."
+  kill -TERM $PID
+  sleep 2
+  if kill -0 $PID 2>/dev/null; then
+    echo "Process $PID ($PROCESS_NAME) did not terminate, sending KILL signal."
+    kill -KILL $PID
+  else
+    echo "Process ($PROCESS_NAME) stopped successfully."
+  fi
+else
+  echo "No periodic backup process ($PROCESS_NAME) found running."
+fi
+
 echo "Decentral Cloud components stop process complete."

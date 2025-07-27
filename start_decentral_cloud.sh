@@ -68,4 +68,12 @@ else
   REACT_APP_BACKEND_URL=http://192.168.50.203:3001 nohup npm start --prefix decentral-cloud/frontend > decentral-cloud/frontend/frontend.log 2>&1 &
 fi
 
+# Start Periodic Ganache DB Backup
+if pgrep -f "run_periodic_backup.sh" > /dev/null; then
+  echo "Periodic Ganache DB backup is already running."
+else
+  echo "Starting periodic Ganache DB backup..."
+  nohup /home/b1s/Documents/decentralCloud/run_periodic_backup.sh > /home/b1s/Documents/decentralCloud/periodic_backup.log 2>&1 &
+fi
+
 echo "All Decentral Cloud components checked."
