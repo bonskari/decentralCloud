@@ -8,6 +8,15 @@ port_in_use() {
   lsof -i :$1 >/dev/null
 }
 
+# --- Handle PRIVATE_KEY for Sepolia Deployment and Backend --- #
+# This interactive prompt will NOT work when run by systemd.
+# For systemd, set Environment="PRIVATE_KEY=0x..." in the service file.
+if [ -z "$PRIVATE_KEY" ]; then
+  read -p "Enter your Sepolia Private Key (0x...): " PRIVATE_KEY
+  export PRIVATE_KEY
+fi
+# ----------------------------------------------------------- #
+
 # Start Hardhat Node
 if port_in_use 8545; then
   echo "Hardhat node (port 8545) is already running."
@@ -23,6 +32,7 @@ if port_in_use 3001; then
   echo "Backend server (port 3001) is already running."
 else
   echo "Starting backend server..."
+  # Ensure PRIVATE_KEY is exported for the backend to use
   nohup node decentral-cloud/backend/index.js > decentral-cloud/backend/backend.log 2>&1 &
 fi
 

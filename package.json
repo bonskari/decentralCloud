@@ -1,0 +1,23 @@
+{
+  "name": "decentralcloud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generate_wallet.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bonskari/decentralCloud.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bonskari/decentralCloud/issues"
+  },
+  "homepage": "https://github.com/bonskari/decentralCloud#readme",
+  "dependencies": {
+    "ethers": "^6.15.0"
+  }
+}

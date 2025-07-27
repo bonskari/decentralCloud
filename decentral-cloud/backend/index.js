@@ -172,7 +172,7 @@ const contractABI = [
 
 // Connect to the local Hardhat network
 const provider = new ethers.JsonRpcProvider('http://localhost:8545');
-const signer = new ethers.Wallet('0x9359ab512d15e9d2c5bd8caa929d9f3f2c5669475f8f06ce7414e8da07246809', provider);
+const signer = new ethers.Wallet('0x964fe99db9c74dd2ee7f968884a8f216ca65152d39d0d1219526e2aea7c98321', provider);
 const storageContract = new ethers.Contract(contractAddress, contractABI, signer);
 
 app.use(cors());
@@ -215,23 +215,32 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
     // Fragment and encrypt the file, distributing across nodes
     const fragmentHashes = [];
-    let nodeIndex = 0;
+    let fragmentCounter = 0;
+    const replicationFactor = 2; // Each fragment will be stored on this many nodes
+
     for (let i = 0; i < fileBuffer.length; i += fragmentSize) {
       const fragment = fileBuffer.slice(i, i + fragmentSize);
-      const encryptedFragment = encrypt(fragment, 'supersecretkey'); // Use a real key in production
-      const fragmentName = `${fileName}.part${Math.floor(i / fragmentSize)}.enc`;
-      const targetNodeUrl = `http://localhost:${3002 + (nodeIndex % nodeStorageUrls.length)}`; // Assuming nodes are on ports 3002, 3003, etc.
-      const storeResponse = await fetch(`${targetNodeUrl}/store-fragment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fragmentName, encryptedFragment: encryptedFragment.toString('base64') }),
-      });
+      const encryptedFragment = encrypt(fragment, 'supersecretkey');
+      const fragmentName = `${fileName}.part${fragmentCounter}.enc`;
 
-      if (!storeResponse.ok) {
-        throw new Error(`Failed to store fragment on node ${nodeIndex % nodeStorageUrls.length}: ${await storeResponse.text()}`);
+      for (let r = 0; r < replicationFactor; r++) {
+        const targetNodeIdx = (fragmentCounter + r) % nodeStorageUrls.length;
+        const targetNodeUrl = nodeStorageUrls[targetNodeIdx];
+        
+        console.log(`Storing fragment ${fragmentName} on node ${targetNodeIdx} (${targetNodeUrl})`);
+
+        const storeResponse = await fetch(`${targetNodeUrl}/store-fragment`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fragmentName, encryptedFragment: encryptedFragment.toString('base64') }),
+        });
+
+        if (!storeResponse.ok) {
+          throw new Error(`Failed to store fragment on node ${targetNodeIdx}: ${await storeResponse.text()}`);
+        }
+        fragmentHashes.push(`${targetNodeIdx}:${fragmentName}`); // Store node index and fragment name for each copy
       }
-      fragmentHashes.push(`${nodeIndex % nodeStorageUrls.length}:${fragmentName}`); // Store node index and fragment name
-      nodeIndex++;
+      fragmentCounter++; // Move to the next fragment
     }
 
     // Store file metadata and fragment info on the blockchain
@@ -277,54 +286,56 @@ app.get('/download/:fileName', async (req, res) => {
 
     const fragmentInfo = allFragmentHashes[fileIndex].split(',');
 
-    let reassembledBuffer = Buffer.alloc(0);
+    const fragmentInfoMap = new Map(); // Map fragmentName to a list of nodeIdx
     for (const info of fragmentInfo) {
       const parts = info.split(':');
-      let fragmentName;
-      let targetNodeUrl;
-
-      if (parts.length === 1) {
-        // Old format: fragmentName only, assume it was in the original fragmentsDir
-        fragmentName = parts[0];
-        // For old fragments, we'll assume they are still in the main backend's local fragments directory
-        // This is a temporary fallback for existing files. New uploads will go to storage nodes.
-        const fragmentPath = path.join(__dirname, 'fragments', fragmentName);
-        if (!fs.existsSync(fragmentPath)) {
-          console.error(`Old format fragment not found locally: ${fragmentName}`);
-          return res.status(500).send('Error: Old fragment not found locally.');
-        }
-        const encryptedFragment = fs.readFileSync(fragmentPath);
-        const decryptedFragment = decrypt(encryptedFragment, 'supersecretkey');
-        reassembledBuffer = Buffer.concat([reassembledBuffer, decryptedFragment]);
-        continue; // Move to the next fragment
-      } else if (parts.length === 2) {
-        // New format: nodeIndex:fragmentName
+      if (parts.length === 2) {
         const nodeIdx = parseInt(parts[0]);
-        fragmentName = parts[1];
-
-        console.log(`Attempting to retrieve fragment: ${fragmentName} from node index: ${nodeIdx}`);
-
-        if (isNaN(nodeIdx) || nodeIdx < 0 || nodeIdx >= nodeStorageUrls.length) {
-          console.error(`Invalid node index: ${nodeIdx}`);
-          return res.status(500).send('Error: Invalid node index.');
+        const fragmentName = parts[1];
+        if (!fragmentInfoMap.has(fragmentName)) {
+          fragmentInfoMap.set(fragmentName, []);
         }
-        targetNodeUrl = nodeStorageUrls[nodeIdx];
+        fragmentInfoMap.get(fragmentName).push(nodeIdx);
       } else {
         console.error(`Invalid fragment info format: ${info}`);
         return res.status(500).send('Error: Invalid fragment information.');
       }
+    }
 
-      // Fetch fragment from the storage node
-      const retrieveResponse = await fetch(`${targetNodeUrl}/retrieve-fragment/${fragmentName}`);
-      if (!retrieveResponse.ok) {
-        const errorBody = await retrieveResponse.text();
-        console.error(`Failed to retrieve fragment from node ${targetNodeUrl}: ${retrieveResponse.status} - ${errorBody}`);
-        throw new Error(`Failed to retrieve fragment from node: ${errorBody}`);
+    let reassembledBuffer = Buffer.alloc(0);
+    for (const [fragmentName, nodeIndices] of fragmentInfoMap.entries()) {
+      let retrieved = false;
+      for (const nodeIdx of nodeIndices) {
+        console.log(`Attempting to retrieve fragment: ${fragmentName} from node index: ${nodeIdx}`);
+
+        if (isNaN(nodeIdx) || nodeIdx < 0 || nodeIdx >= nodeStorageUrls.length) {
+          console.error(`Invalid node index: ${nodeIdx}`);
+          continue; // Try next replica
+        }
+        const targetNodeUrl = nodeStorageUrls[nodeIdx];
+
+        try {
+          const retrieveResponse = await fetch(`${targetNodeUrl}/retrieve-fragment/${fragmentName}`);
+          if (!retrieveResponse.ok) {
+            const errorBody = await retrieveResponse.text();
+            console.error(`Failed to retrieve fragment from node ${targetNodeUrl}: ${retrieveResponse.status} - ${errorBody}`);
+            continue; // Try next replica
+          }
+          const encryptedFragmentBase64 = await retrieveResponse.text();
+          const encryptedFragment = Buffer.from(encryptedFragmentBase64, 'base64');
+          const decryptedFragment = decrypt(encryptedFragment, 'supersecretkey');
+          reassembledBuffer = Buffer.concat([reassembledBuffer, decryptedFragment]);
+          retrieved = true;
+          break; // Fragment retrieved, move to next fragment
+        } catch (error) {
+          console.error(`Error fetching fragment ${fragmentName} from node ${targetNodeUrl}:`, error);
+          continue; // Try next replica
+        }
       }
-      const encryptedFragmentBase64 = await retrieveResponse.text();
-      const encryptedFragment = Buffer.from(encryptedFragmentBase64, 'base64');
-      const decryptedFragment = decrypt(encryptedFragment, 'supersecretkey');
-      reassembledBuffer = Buffer.concat([reassembledBuffer, decryptedFragment]);
+      if (!retrieved) {
+        console.error(`Failed to retrieve fragment ${fragmentName} from any replica.`);
+        return res.status(500).send(`Error: Failed to retrieve fragment ${fragmentName}.`);
+      }
     }
 
     res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);

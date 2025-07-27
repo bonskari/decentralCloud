@@ -35,5 +35,5 @@ decentral-cloud/smart-contract/artifacts/
 decentral-cloud/smart-contract/cache/
 decentral-cloud/smart-contract/contract-address.json
 
-# Ganache database
-ganache_db
+# Private key file
+private_key.txt
