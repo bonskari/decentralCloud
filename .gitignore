@@ -1,0 +1,38 @@
+# Log files
+decentral-cloud/backend/backend.log
+decentral-cloud/storage-node-1/node1.log
+decentral-cloud/storage-node-2/node2.log
+decentral-cloud/storage-node-3/node3.log
+decentral-cloud/frontend/frontend.log
+
+# Node modules
+node_modules/
+decentral-cloud/backend/node_modules/
+decentral-cloud/frontend/node_modules/
+decentral-cloud/smart-contract/node_modules/
+decentral-cloud/storage-node-1/node_modules/
+decentral-cloud/storage-node-2/node_modules/
+decentral-cloud/storage-node-3/node_modules/
+
+# Build artifacts
+decentral-cloud/frontend/build/
+
+# IDE and OS generated files
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea/
+.vscode/
+
+# Uploads and fragments
+decentral-cloud/backend/uploads/
+decentral-cloud/backend/fragments/
+decentral-cloud/storage-node-1/fragments/
+decentral-cloud/storage-node-2/fragments/
+decentral-cloud/storage-node-3/fragments/
+
+# Hardhat artifacts
+decentral-cloud/smart-contract/artifacts/
+decentral-cloud/smart-contract/cache/
