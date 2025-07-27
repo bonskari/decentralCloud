@@ -1,0 +1,52 @@
+Backend listening at http://localhost:3001
+File received: PJ-Masks-Coloring-Page.jpg
+Error processing file: Error: Failed to store fragment on node 0: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>PayloadTooLargeError: request entity too large<br> &nbsp; &nbsp;at readStream (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:163:17)<br> &nbsp; &nbsp;at getRawBody (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:116:12)<br> &nbsp; &nbsp;at read (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/read.js:74:3)<br> &nbsp; &nbsp;at jsonParser (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/types/json.js:125:5)<br> &nbsp; &nbsp;at Layer.handleRequest (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/lib/layer.js:152:17)<br> &nbsp; &nbsp;at trimPrefix (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:342:13)<br> &nbsp; &nbsp;at /home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:297:9<br> &nbsp; &nbsp;at processParams (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:582:12)<br> &nbsp; &nbsp;at next (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:291:5)<br> &nbsp; &nbsp;at cors (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/cors/lib/index.js:188:7)</pre>
+</body>
+</html>
+
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:230:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+ReferenceError: originalFilePath is not defined
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:246:19
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+File received: PJ-Masks-Coloring-Page.jpg
+Error processing file: Error: Failed to store fragment on node 0: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>PayloadTooLargeError: request entity too large<br> &nbsp; &nbsp;at readStream (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:163:17)<br> &nbsp; &nbsp;at getRawBody (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:116:12)<br> &nbsp; &nbsp;at read (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/read.js:74:3)<br> &nbsp; &nbsp;at jsonParser (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/types/json.js:125:5)<br> &nbsp; &nbsp;at Layer.handleRequest (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/lib/layer.js:152:17)<br> &nbsp; &nbsp;at trimPrefix (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:342:13)<br> &nbsp; &nbsp;at /home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:297:9<br> &nbsp; &nbsp;at processParams (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:582:12)<br> &nbsp; &nbsp;at next (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:291:5)<br> &nbsp; &nbsp;at cors (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/cors/lib/index.js:188:7)</pre>
+</body>
+</html>
+
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:230:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+ReferenceError: originalFilePath is not defined
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:246:19
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+File received: megaman.jpg
+Error processing file: Error: Failed to store fragment on node 0: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>PayloadTooLargeError: request entity too large<br> &nbsp; &nbsp;at readStream (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:163:17)<br> &nbsp; &nbsp;at getRawBody (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/raw-body/index.js:116:12)<br> &nbsp; &nbsp;at read (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/read.js:74:3)<br> &nbsp; &nbsp;at jsonParser (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/body-parser/lib/types/json.js:125:5)<br> &nbsp; &nbsp;at Layer.handleRequest (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/lib/layer.js:152:17)<br> &nbsp; &nbsp;at trimPrefix (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:342:13)<br> &nbsp; &nbsp;at /home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:297:9<br> &nbsp; &nbsp;at processParams (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:582:12)<br> &nbsp; &nbsp;at next (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/router/index.js:291:5)<br> &nbsp; &nbsp;at cors (/home/b1s/Documents/decentralCloud/decentral-cloud/storage-node-1/node_modules/cors/lib/index.js:188:7)</pre>
+</body>
+</html>
+
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:230:15
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+ReferenceError: originalFilePath is not defined
+    at /home/b1s/Documents/decentralCloud/decentral-cloud/backend/index.js:246:19
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
